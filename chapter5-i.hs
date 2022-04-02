@@ -34,7 +34,7 @@ instance Eq (HList '[]) where
 instance (Eq t, Eq (HList ts)) => Eq (HList (t ': ts)) where
     (a :# as) == (b :# bs) = a == b && as == bs
 
---- Exercise 5.3-i
+-- Exercise 5.3-i
 -- Implement Ord for HList
 
 instance Ord (HList '[]) where
@@ -45,7 +45,7 @@ instance (Ord t, Ord (HList ts)) => Ord (HList (t ': ts)) where
         EQ -> compare as bs
         c  -> c
 
---- Exercise 5.3-ii
+-- Exercise 5.3-ii
 -- Implement Show for HList
 
 instance Show (HList '[]) where

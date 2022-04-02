@@ -1,6 +1,7 @@
 # Chapter 1
 
 > **Exercise 1.2-i**
+>
 > Determine the cardinality of Either Bool (Bool,
 Maybe Bool) -> Bool.
 
@@ -12,6 +13,7 @@ Maybe Bool) -> Bool.
 ```
 
 > **Exercise 1.4-i**
+>
 > Use Curry–Howard to prove that `(a^b)^c = a^(bc)`. That is, provide a function of type `(b -> c -> a) -> (b, c) -> a`, and one of `((b, c) -> a) -> b -> c -> a`. Make sure they satisfy the equalities `to . from = id` and `from . to = id`. Do these functions remind you of anything from `Prelude`?
 
 ```
@@ -23,6 +25,7 @@ from bca b c = bca (b, c)
 ```
 
 > **Exercise 1.4-ii**
+>
 > Give a proof of the exponent law that `a^b*a^c = a^(b + c)`.
 
 ```
@@ -36,6 +39,7 @@ from ebca = (ebca . Left, ebca . Right)
 ```
 
 > **Exercise 1.4-iii**
+>
 > Prove `(a*b)^c = a^c*b^c`.
 
 ```

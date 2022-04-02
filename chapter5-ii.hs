@@ -28,7 +28,7 @@ instance All Eq ts => Eq (HList ts) where
     HNil      == HNil      = True
     (a :# as) == (b :# bs) = a == b && as == bs
 
---- Exercise 5.3-iii
+-- Exercise 5.3-iii
 -- Rewrite the Ord and Show instances in terms of All.
 
 instance (All Eq ts, All Ord ts) => Ord (HList ts) where
