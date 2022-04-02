@@ -1,5 +1,6 @@
-# chapter3
+# Chapter 3
 
+> **Exercise 3-i**
 > Which of these types are `Functor`s? Give instances for the ones that are.
 
 ```
