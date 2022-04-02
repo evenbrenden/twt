@@ -11,9 +11,7 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-import           Data.Kind                      ( Constraint
-                                                , Type
-                                                )
+import           Data.Kind                      ( Type )
 
 data HList (ts :: [Type]) where
     HNil ::HList '[]
