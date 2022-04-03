@@ -11,6 +11,8 @@ Int -> forall a. (a -> a)
 
 The deepest `forall` has 1 arrow to the left of it, so it is rank-1.
 
+(Need `{-# LANGUAGE ImpredicativeTypes #-}` for the rest of these exercises.)
+
 > **Exercise 6.3-ii**
 >
 > What is the rank of `(a -> b) -> (forall c. c -> a) -> b`? Hint: recall that the function arrow is right-associative, so `a -> b -> c` is actually parsed as `a -> (b -> c)`.
