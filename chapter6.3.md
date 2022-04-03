@@ -9,7 +9,7 @@ Int -> forall a. a -> a ~
 Int -> forall a. (a -> a)
 ```
 
-Deepest `forall` has 1 arrow to the left of it, so it is rank-1.
+The deepest `forall` has 1 arrow to the left of it, so it is rank-1.
 
 > **Exercise 6.3-ii**
 >
@@ -20,7 +20,7 @@ Deepest `forall` has 1 arrow to the left of it, so it is rank-1.
 forall a b. ((a -> b) -> ((forall c. c -> a) -> b))
 ```
 
-Deepest `forall` has 2 arrows to the left of it, so it is rank-2.
+The deepest `forall` has 2 arrows to the left of it, so it is rank-2.
 
 > **Exercise 6.3-iii**
 >
@@ -31,4 +31,4 @@ Deepest `forall` has 2 arrows to the left of it, so it is rank-2.
 forall m b z a. (((forall x. m x -> b (z m x)) -> b (z m a)) -> m a)
 ```
 
-Deepest `forall` has 3 arrows to the left of it, so it is rank-3.
+The deepest `forall` has 3 arrows to the left of it, so it is rank-3.
