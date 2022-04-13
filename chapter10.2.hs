@@ -5,7 +5,6 @@
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeInType #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
@@ -15,7 +14,6 @@ import           Data.Kind                      ( Type )
 -- Defunctionalize listToMaybe at the type-level.
 
 type Exp a = a -> Type
-
 type family Eval (e :: Exp a) :: a
 
 data ListToMaybe :: [a] -> Exp (Maybe a)

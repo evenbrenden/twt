@@ -1,13 +1,7 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -p ghc ghcid -i "ghcid -c 'ghci -Wall'"
 
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE UndecidableInstances #-}
-
-import           Prelude                 hiding ( fst )
 
 -- Exercise 10.1-i
 -- Defunctionalize listToMaybe :: [a] -> Maybe a.
