@@ -5,7 +5,7 @@
 {-# LANGUAGE RankNTypes #-}
 
 -- Exercise 7.1-iii
--- Write the `Show` instance for `HasShow` in terms of `elimHasShow`.
+-- Write the Show instance for HasShow in terms of elimHasShow.
 
 data HasShow where
     HasShow ::Show t => t -> HasShow
