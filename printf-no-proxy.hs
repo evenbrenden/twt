@@ -41,5 +41,8 @@ instance {-# OVERLAPPING #-} HasPrintf a => HasPrintf (String :<< a) where
     type Printf (String :<< a) = String -> Printf a
     format s param = format @a (s <> param)
 
+printf :: forall a. HasPrintf a => Printf a
+printf = format @a mempty
+
 example :: String
-example = format @(Int :<< "+" :<< Int :<< "=3") mempty 1 2
+example = printf @(Int :<< "+" :<< Int :<< "=3") 1 2

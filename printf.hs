@@ -40,3 +40,6 @@ instance {-# OVERLAPPING #-} HasPrintf a => HasPrintf (String :<< a) where
 
 printf :: HasPrintf a => Proxy a -> Printf a
 printf = format mempty
+
+example :: String
+example = printf (Proxy @(Int :<< "+" :<< Int :<< "=3")) 1 2
