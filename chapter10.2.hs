@@ -26,7 +26,7 @@ type instance Eval (ListToMaybe (a ': _1)) = 'Just a
 -- Defunctionalize foldr :: (a -> b -> b) -> b -> [a] -> b.
 
 data Foldr :: (a -> b -> Exp b) -> b -> [a] -> Exp b
-type instance Eval (Foldr f b '[]) = '[]
+type instance Eval (Foldr _1 b '[]) = b
 type instance Eval (Foldr f b (a ': as)) = Eval (f a (Eval (Foldr f b as)))
 
 data FlipConst :: a -> b -> Exp b
@@ -34,4 +34,4 @@ type instance Eval (FlipConst a b) = b
 
 -- > :kind! Eval (Foldr FlipConst "c" '["a", "b"])
 -- Eval (Foldr FlipConst "c" '["a", "b"]) :: GHC.Types.Symbol
--- = Eval (Foldr FlipConst "c" '[])
+-- = "c"
