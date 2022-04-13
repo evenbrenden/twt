@@ -1,4 +1,4 @@
-# Chapter 7
+# Chapter 7.1
 
 > **Exercise 7.1-i**
 >
