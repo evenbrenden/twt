@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell chapter11.2.nix -i "ghcid -c 'ghci -Wall'"
+#! nix-shell chapter11.nix -i "ghcid -c 'ghci -Wall'"
 
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE ConstraintKinds #-}
