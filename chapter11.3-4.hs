@@ -22,6 +22,7 @@ import           Data.Kind                      ( Type )
 import           Data.Proxy                     ( Proxy(..) )
 import qualified Data.Vector                   as V
 import           Fcf                     hiding ( Any )
+import           GHC.OverloadedLabels           ( IsLabel(..) )
 import           GHC.TypeLits
 import           Unsafe.Coerce                  ( unsafeCoerce )
 
@@ -48,8 +49,8 @@ insert
 insert _ ft (OpenProduct v) = OpenProduct $ V.cons (Any ft) v
 
 insertExample :: OpenProduct Maybe '[ '("another", Bool), '("key", [Char])]
-insertExample = let hello   = insert (Key @"key") (Just "hello") nil
-                    another = insert (Key @"another") (Just True) hello
+insertExample = let hello   = insert #key (Just "hello") nil
+                    another = insert #another (Just True) hello
                 in another
 
 type FindElem (key :: Symbol) (ts :: [(Symbol, k)]) =
@@ -78,7 +79,7 @@ get _ (OpenProduct v) =
     unAny (Any a) = unsafeCoerce a
 
 getExample :: Maybe String
-getExample = get (Key @"key") insertExample
+getExample = get #key insertExample
 -- > getExample
 -- Just "hello"
 
@@ -96,12 +97,15 @@ update _ ft (OpenProduct v) =
     OpenProduct $ v V.// [(findElem @key @ts, Any ft)]
 
 updateExample :: OpenProduct Maybe '[ '("another", Bool), '("key", [Char])]
-updateExample = update (Key @"key") (Just "bye") insertExample
+updateExample = update #key (Just "bye") insertExample
 
 getExample' :: Maybe String
-getExample' = get (Key @"key") updateExample
+getExample' = get #key updateExample
 -- > getExample'
 -- Just "bye"
+
+instance (key ~ key') => IsLabel key (Key key') where
+    fromLabel = Key
 
 -- Exercise 11.3-i
 -- Implement delete for OpenProducts.
@@ -120,7 +124,7 @@ delete _ (OpenProduct v) =
     in  OpenProduct $ a <> V.tail b
 
 deleteExample :: OpenProduct Maybe '[ '("key", [Char])]
-deleteExample = delete (Key @"another") insertExample
+deleteExample = delete #another insertExample
 
 -- Exercise 11.3-ii
 -- Implement upsert (update or insert) for OpenProducts.
