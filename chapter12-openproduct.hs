@@ -10,6 +10,7 @@
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
@@ -83,3 +84,55 @@ type FindElem (key :: Symbol) (ts :: [(Symbol, k)]) =
 
 findElem :: forall key ts . KnownNat (FindElem key ts) => Int
 findElem = fromIntegral . natVal $ Proxy @(FindElem key ts)
+
+-- Exercise 12-i
+-- Add helpful type errors to OpenProduct's update and delete functions.
+
+type FriendlyFindElem :: Symbol -> Symbol -> [(Symbol, k)] -> Exp Nat
+type family FriendlyFindElem (caller :: Symbol) (key :: Symbol) (ts :: [(Symbol, k)]) where
+    FriendlyFindElem caller key ts =
+            FromMaybe
+                ( TypeError
+                ( 'Text "Attempted to call '"
+            ':<>: 'Text caller
+            ':<>: 'Text "' with the key '"
+            ':<>: 'Text key
+            ':<>: 'Text "'."
+            ':$$: 'Text "But the OpenProduct has the keys:"
+            ':$$: 'Text "  "
+            ':<>: 'ShowType (Eval (Map Fst ts))
+                )) =<< FindIndex (TyEq key <=< Fst) ts
+
+type UpdateElem (key :: Symbol) (t :: k) (ts :: [(Symbol, k)]) =
+    SetIndex (FindElem key ts) '(key, t) ts
+
+friendlyUpdate
+    :: forall key ts t f
+     . ( KnownNat (Eval (FriendlyFindElem "friendlyUpdate" key ts))
+       , KnownNat (FindElem key ts))
+    => Key key
+    -> f t
+    -> OpenProduct f ts
+    -> OpenProduct f (Eval (UpdateElem key t ts))
+friendlyUpdate _ ft (OpenProduct v) =
+    OpenProduct $ v V.// [(findElem @key @ts, Any ft)]
+
+-- > friendlyUpdate #key (Just "yo") nil
+-- error
+
+type DeleteElem (key :: Symbol) (ts :: [(Symbol, k)]) =
+    Filter (Not <=< TyEq key <=< Fst) ts
+
+friendlyDelete
+    :: forall key ts f
+     . ( KnownNat (Eval (FriendlyFindElem "friendlyDelete" key ts))
+       , KnownNat (FindElem key ts))
+    => Key key
+    -> OpenProduct f ts
+    -> OpenProduct f (Eval (DeleteElem key ts))
+friendlyDelete _ (OpenProduct v) =
+    let (a, b) = V.splitAt (findElem @key @ts) v
+    in  OpenProduct $ a <> V.tail b
+
+-- > friendlyDelete #key nil
+-- error
