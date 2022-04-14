@@ -70,7 +70,6 @@ matchExample = match (const "🤯") injExample
 -- Exercise 11.2-i
 -- Write weaken :: OpenSum f ts -> OpenSum f (x ': ts)
 
--- From the Solutions appendix
 weaken :: OpenSum f ts -> OpenSum f (x ': ts)
 weaken (UnsafeOpenSum n t) = UnsafeOpenSum (n + 1) t
 
