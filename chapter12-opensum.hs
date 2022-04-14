@@ -20,8 +20,10 @@ import           Fcf                     hiding ( Any )
 import           GHC.TypeLits            hiding ( type (+) )
 import           Unsafe.Coerce
 
-type FriendlyFindElem :: (k -> Type) -> k -> [k] -> Exp Nat
-type family FriendlyFindElem (f :: k -> Type) (t :: k) (ts :: [k]) where
+type family FriendlyFindElem
+        (f :: k -> Type)
+        (t :: k)
+        (ts :: [k]) where
     FriendlyFindElem f t ts =
         FromMaybe
             ( TypeError

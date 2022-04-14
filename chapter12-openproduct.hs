@@ -88,8 +88,10 @@ findElem = fromIntegral . natVal $ Proxy @(FindElem key ts)
 -- Exercise 12-i
 -- Add helpful type errors to OpenProduct's update and delete functions.
 
-type FriendlyFindElem :: Symbol -> Symbol -> [(Symbol, k)] -> Exp Nat
-type family FriendlyFindElem (caller :: Symbol) (key :: Symbol) (ts :: [(Symbol, k)]) where
+type family FriendlyFindElem
+        (caller :: Symbol)
+        (key :: Symbol)
+        (ts :: [(Symbol, k)]) where
     FriendlyFindElem caller key ts =
             FromMaybe
                 ( TypeError
