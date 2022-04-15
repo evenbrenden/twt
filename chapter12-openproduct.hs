@@ -142,7 +142,7 @@ friendlyDelete _ (OpenProduct v) =
 -- Exercise 12-ii
 -- Write a closed type family of kind [K] -> ERRORMESSAGE that pretty prints a list. Use it to improve the error message from FriendlyFindElem.
 
-type family ShowList (ts :: [Symbol]) :: ErrorMessage where
+type family ShowList (ts :: [k]) :: ErrorMessage where
     ShowList (a : '[]) = 'ShowType a
     ShowList (a : as) = 'ShowType a ':<>: 'Text ", " ':<>: ShowList as
 
