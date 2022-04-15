@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell chapter12.nix -i "ghcid -c 'ghci -Wall -Wno-missing-methods -Wno-orphans'"
+#! nix-shell chapter12.nix -i "ghcid -c 'ghci -Wall'"
 
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE ConstraintKinds #-}
