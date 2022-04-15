@@ -138,3 +138,44 @@ friendlyDelete _ (OpenProduct v) =
 
 -- > friendlyDelete #key nil
 -- error
+
+-- Exercise 12-ii
+-- Write a closed type family of kind [K] -> ERRORMESSAGE that pretty prints a list. Use it to improve the error message from FriendlyFindElem.
+
+type family ShowList (ts :: [Symbol]) :: ErrorMessage where
+    ShowList (a : '[]) = 'ShowType a
+    ShowList (a : as) = 'ShowType a ':<>: 'Text ", " ':<>: ShowList as
+
+type family FriendlierFindElem
+        (caller :: Symbol)
+        (key :: Symbol)
+        (ts :: [(Symbol, k)]) where
+    FriendlierFindElem caller key ts =
+            FromMaybe
+                ( TypeError
+                ( 'Text "Attempted to call '"
+            ':<>: 'Text caller
+            ':<>: 'Text "' with the key '"
+            ':<>: 'Text key
+            ':<>: 'Text "'."
+            ':$$: 'Text "But the OpenProduct has the keys:"
+            ':$$: 'Text "  "
+            ':<>: ShowList (Eval (Map Fst ts))
+                )) =<< FindIndex (TyEq key <=< Fst) ts
+
+friendlierDelete
+    :: forall key ts f
+     . ( KnownNat (Eval (FriendlierFindElem "friendlyDelete" key ts))
+       , KnownNat (FindElem key ts))
+    => Key key
+    -> OpenProduct f ts
+    -> OpenProduct f (Eval (DeleteElem key ts))
+friendlierDelete _ (OpenProduct v) =
+    let (a, b) = V.splitAt (findElem @key @ts) v
+    in  OpenProduct $ a <> V.tail b
+
+-- > friendlierDelete #key nil
+-- ...
+-- But the OpenProduct has the keys:
+--   "another", "key"
+-- ...
