@@ -6,7 +6,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE StandaloneDeriving #-}
-{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeOperators #-}
 
 import           GHC.Generics
@@ -113,21 +112,16 @@ instance GExNihilo U1 where
     gExNihilo U1 = True
 
 instance GExNihilo V1 where
-    gExNihilo _ = True
+    gExNihilo _ = False
 
 instance GExNihilo (K1 _1 a) where
     gExNihilo _ = False
 
--- Not sure why I need this, but it appears that I do
-instance GExNihilo (URec a) where
-    gExNihilo _ = True
-
 instance (GExNihilo a, GExNihilo b) => GExNihilo (a :+: b) where
-    gExNihilo (L1 a) = gExNihilo a
-    gExNihilo (R1 b) = gExNihilo b
+    gExNihilo _ = False
 
 instance (GExNihilo a, GExNihilo b) => GExNihilo (a :*: b) where
-    gExNihilo (a :*: b) = gExNihilo a && gExNihilo b
+    gExNihilo _ = False
 
 instance GExNihilo a => GExNihilo (M1 _x _y a) where
     gExNihilo (M1 a) = gExNihilo a
@@ -136,9 +130,7 @@ instance GExNihilo a => GExNihilo (M1 _x _y a) where
 exNihilo :: (Generic a, GExNihilo (Rep a)) => a -> Maybe a
 exNihilo a = if gExNihilo (from a) then Just a else Nothing
 
-deriving instance Generic Int
-
--- > exNihilo @Int $ 1
--- Just 1
--- > exNihilo $ Just 1
+-- > exNihilo True
 -- Nothing
+-- > exNihilo ()
+-- Just ()
