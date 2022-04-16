@@ -1,11 +1,12 @@
 #! /usr/bin/env nix-shell
-#! nix-shell -p ghc ghcid -i "ghcid -c 'ghci -Wall'"
+#! nix-shell -p ghc ghcid -i "ghcid -c 'ghci -Wall -Wno-orphan -Wno-orphans'"
 
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeOperators #-}
 
 import           GHC.Generics
@@ -101,3 +102,43 @@ class MyOrd a where
     kompare a b = gcompare (from a) (from b)
 
 deriving instance (Ord a, Ord b, Ord c) => MyOrd (Bar a b c)
+
+-- Exercise 13.2-ii
+-- Use GHC.Generics to implement the function exNihilo :: Maybe a. This function should give a value of Just a if a has exactly one data constructor which takes zero arguments. Otherwise, exNihilo should return Nothing.
+
+class GExNihilo a where
+    gExNihilo :: a x -> Bool
+
+instance GExNihilo U1 where
+    gExNihilo U1 = True
+
+instance GExNihilo V1 where
+    gExNihilo _ = True
+
+instance GExNihilo (K1 _1 a) where
+    gExNihilo _ = False
+
+-- Not sure why I need this, but it appears that I do
+instance GExNihilo (URec a) where
+    gExNihilo _ = True
+
+instance (GExNihilo a, GExNihilo b) => GExNihilo (a :+: b) where
+    gExNihilo (L1 a) = gExNihilo a
+    gExNihilo (R1 b) = gExNihilo b
+
+instance (GExNihilo a, GExNihilo b) => GExNihilo (a :*: b) where
+    gExNihilo (a :*: b) = gExNihilo a && gExNihilo b
+
+instance GExNihilo a => GExNihilo (M1 _x _y a) where
+    gExNihilo (M1 a) = gExNihilo a
+
+-- It ain't much, but it's honest work
+exNihilo :: (Generic a, GExNihilo (Rep a)) => a -> Maybe a
+exNihilo a = if gExNihilo (from a) then Just a else Nothing
+
+deriving instance Generic Int
+
+-- > exNihilo @Int $ 1
+-- Just 1
+-- > exNihilo $ Just 1
+-- Nothing
