@@ -119,8 +119,12 @@ friendlyUpdate
 friendlyUpdate _ ft (OpenProduct v) =
     OpenProduct $ v V.// [(findElem @key @ts, Any ft)]
 
--- > friendlyUpdate #key (Just "yo") nil
--- error
+-- > :set -XOverloadedLabels
+-- > friendlyUpdate #nokey (Just "yo") insertExample
+-- ...
+--       But the OpenProduct has the keys:
+--         '["another", "key"]
+-- ...
 
 type DeleteElem (key :: Symbol) (ts :: [(Symbol, k)]) =
     Filter (Not <=< TyEq key <=< Fst) ts
@@ -136,8 +140,12 @@ friendlyDelete _ (OpenProduct v) =
     let (a, b) = V.splitAt (findElem @key @ts) v
     in  OpenProduct $ a <> V.tail b
 
--- > friendlyDelete #key nil
--- error
+-- > :set -XOverloadedLabels
+-- > friendlyDelete #nokey insertExample
+-- ...
+--       But the OpenProduct has the keys:
+--         '["another", "key"]
+-- ...
 
 -- Exercise 12-ii
 -- Write a closed type family of kind [K] -> ERRORMESSAGE that pretty prints a list. Use it to improve the error message from FriendlyFindElem.
@@ -175,8 +183,9 @@ friendlierDelete _ (OpenProduct v) =
     let (a, b) = V.splitAt (findElem @key @ts) v
     in  OpenProduct $ a <> V.tail b
 
--- > friendlierDelete #key nil
+-- > :set -XOverloadedLabels
+-- > friendlierDelete #nokey insertExample
 -- ...
--- But the OpenProduct has the keys:
---   "another", "key"
+--       But the OpenProduct has the keys:
+--         "another", "key"
 -- ...
