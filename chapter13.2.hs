@@ -106,31 +106,30 @@ deriving instance (Ord a, Ord b, Ord c) => MyOrd (Bar a b c)
 -- Use GHC.Generics to implement the function exNihilo :: Maybe a. This function should give a value of Just a if a has exactly one data constructor which takes zero arguments. Otherwise, exNihilo should return Nothing.
 
 class GExNihilo a where
-    gExNihilo :: a x -> Bool
+    gexNihilo :: Maybe (a x)
 
 instance GExNihilo U1 where
-    gExNihilo U1 = True
+    gexNihilo = Just U1
 
 instance GExNihilo V1 where
-    gExNihilo _ = False
+    gexNihilo = Nothing
 
 instance GExNihilo (K1 _1 a) where
-    gExNihilo _ = False
+    gexNihilo = Nothing
 
-instance (GExNihilo a, GExNihilo b) => GExNihilo (a :+: b) where
-    gExNihilo _ = False
+instance GExNihilo (a :+: b) where
+    gexNihilo = Nothing
 
-instance (GExNihilo a, GExNihilo b) => GExNihilo (a :*: b) where
-    gExNihilo _ = False
+instance GExNihilo (a :*: b) where
+    gexNihilo = Nothing
 
 instance GExNihilo a => GExNihilo (M1 _x _y a) where
-    gExNihilo (M1 a) = gExNihilo a
+    gexNihilo = fmap M1 gexNihilo
 
--- It ain't much, but it's honest work
-exNihilo :: (Generic a, GExNihilo (Rep a)) => a -> Maybe a
-exNihilo a = if gExNihilo (from a) then Just a else Nothing
+exNihilo :: (Generic a, GExNihilo (Rep a)) => Maybe a
+exNihilo = to <$> gexNihilo
 
--- > exNihilo True
+-- > exNihilo @Bool
 -- Nothing
--- > exNihilo ()
+-- > exNihilo @()
 -- Just ()
