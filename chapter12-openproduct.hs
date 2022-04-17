@@ -120,8 +120,9 @@ friendlyUpdate _ ft (OpenProduct v) =
     OpenProduct $ v V.// [(findElem @key @ts, Any ft)]
 
 -- > :set -XOverloadedLabels
--- > friendlyUpdate #nokey (Just "yo") insertExample
+-- > friendlyUpdate #newkey (Just "yo") insertExample
 -- ...
+--     • Attempted to call 'friendlyUpdate' with the key 'newkey'.
 --       But the OpenProduct has the keys:
 --         '["another", "key"]
 -- ...
@@ -141,8 +142,9 @@ friendlyDelete _ (OpenProduct v) =
     in  OpenProduct $ a <> V.tail b
 
 -- > :set -XOverloadedLabels
--- > friendlyDelete #nokey insertExample
+-- > friendlyDelete #newkey insertExample
 -- ...
+--     • Attempted to call 'friendlyDelete' with the key 'newkey'.
 --       But the OpenProduct has the keys:
 --         '["another", "key"]
 -- ...
@@ -184,8 +186,9 @@ friendlierDelete _ (OpenProduct v) =
     in  OpenProduct $ a <> V.tail b
 
 -- > :set -XOverloadedLabels
--- > friendlierDelete #nokey insertExample
+-- > friendlierDelete #newkey insertExample
 -- ...
+--     • Attempted to call 'friendlyDelete' with the key 'newkey'.
 --       But the OpenProduct has the keys:
 --         "another", "key"
 -- ...
