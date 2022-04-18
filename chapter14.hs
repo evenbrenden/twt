@@ -17,7 +17,7 @@ import           Data.Coerce
 import           Fcf
 import           GHC.TypeLits                   ( Nat )
 import qualified GHC.TypeLits                  as TL
-import           Language.Haskell.DoNotation
+import           Language.Haskell.DoNotation   as LHDN
 import           Prelude                 hiding ( Monad(..)
                                                 , getContents
                                                 , putStrLn
@@ -28,6 +28,7 @@ import           System.IO               hiding ( Handle
                                                 , openFile
                                                 , putStrLn
                                                 )
+import qualified System.IO.Strict              as SIOS
 
 newtype Ix m i j a = Ix
     { unsafeRunIx :: m a
@@ -116,7 +117,7 @@ openClose = runLinear $ readme >>= closeFile
 --         arising from a use of ‘closeFile’
 -- ...
 
--- > runLinear $ readme >>= \f -> closeFile f >> Language.Haskell.DoNotation.pure f
+-- > runLinear $ readme >>= \f -> closeFile f >> LHDN.pure f
 -- ...
 --     • Couldn't match type ‘a’ with ‘Handle s 0’
 --         because type variable ‘s’ would escape its scope
@@ -125,7 +126,7 @@ openClose = runLinear $ readme >>= closeFile
 getContents
     :: Handle s key
     -> Linear s ( 'LinearState next open) ( 'LinearState next open) String
-getContents h = coerce $ SIO.hGetContents (coerce h)
+getContents h = coerce $ SIOS.hGetContents (coerce h)
 
 putStrLn
     :: String -> Linear s ( 'LinearState next open) ( 'LinearState next open) ()
@@ -137,3 +138,10 @@ printReadme = runLinear $ do
     g <- getContents f
     putStrLn g
     closeFile f
+
+getReadme :: IO String
+getReadme = runLinear $ do
+    f <- readme
+    g <- getContents f
+    closeFile f
+    LHDN.pure g
