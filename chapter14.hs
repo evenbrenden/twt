@@ -18,10 +18,15 @@ import           Fcf
 import           GHC.TypeLits                   ( Nat )
 import qualified GHC.TypeLits                  as TL
 import           Language.Haskell.DoNotation
-import           Prelude                 hiding ( Monad(..) )
+import           Prelude                 hiding ( Monad(..)
+                                                , getContents
+                                                , putStrLn
+                                                )
 import qualified System.IO                     as SIO
 import           System.IO               hiding ( Handle
+                                                , getContents
                                                 , openFile
+                                                , putStrLn
                                                 )
 
 newtype Ix m i j a = Ix
@@ -116,3 +121,19 @@ openClose = runLinear $ readme >>= closeFile
 --     • Couldn't match type ‘a’ with ‘Handle s 0’
 --         because type variable ‘s’ would escape its scope
 -- ...
+
+getContents
+    :: Handle s key
+    -> Linear s ( 'LinearState next open) ( 'LinearState next open) String
+getContents h = coerce $ SIO.hGetContents (coerce h)
+
+putStrLn
+    :: String -> Linear s ( 'LinearState next open) ( 'LinearState next open) ()
+putStrLn = coerce SIO.putStrLn
+
+printReadme :: IO ()
+printReadme = runLinear $ do
+    f <- readme
+    g <- getContents f
+    putStrLn g
+    closeFile f
