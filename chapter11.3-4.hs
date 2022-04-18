@@ -134,4 +134,46 @@ deleteExample = delete #another insertExample
 -- kind to the term-level, and then pattern match on it
 -- to implement upsert.
 
--- PASS
+type UpsertElem (key :: Symbol) (t :: k) (ts :: [(Symbol, k)]) =
+    FromMaybe ('(key, t) ': ts) =<< Map (IWouldNeverHaveThoughtOfThis SetIndex '(key, t) ts) =<< FindIndex (TyEq key <=< Fst) ts
+
+data IWouldNeverHaveThoughtOfThis
+    :: (a -> b -> c -> Exp r)
+    -> b
+    -> c
+    -> a
+    -> Exp r
+
+type instance Eval (IWouldNeverHaveThoughtOfThis f b c a) =
+    Eval (f a b c)
+
+type UpsertLocation (key :: Symbol) (ts :: [(Symbol, k)]) =
+    Eval (FindIndex (TyEq key <=< Fst) ts)
+
+class FindUpsertElem (a :: Maybe Nat) where
+    upsertElem :: Maybe Int
+
+instance FindUpsertElem 'Nothing where
+    upsertElem = Nothing
+
+instance KnownNat n => FindUpsertElem ('Just n) where
+    upsertElem =
+        Just . fromIntegral . natVal $ Proxy @n
+
+upsert
+    :: forall key ts t f
+     . FindUpsertElem (UpsertLocation key ts)
+    => Key key
+    -> f t
+    -> OpenProduct f ts
+    -> OpenProduct f (Eval (UpsertElem key t ts))
+upsert _ ft (OpenProduct v) =
+    OpenProduct $ case upsertElem @(UpsertLocation key ts) of
+        Nothing -> V.cons (Any ft) v
+        Just n -> v V.// [(n, Any ft)]
+
+upsertExample1 :: OpenProduct Maybe '[ '("another", Integer), '("key", String)]
+upsertExample1 = upsert #another (Just 9) insertExample
+
+upsertExample2 :: OpenProduct Maybe '[ '("yetanother", Double), '("another", Bool), '("key", String)]
+upsertExample2 = upsert #yetanother (Just 9.0) insertExample
