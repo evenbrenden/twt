@@ -126,7 +126,7 @@ openClose = runLinear $ readme >>= closeFile
 getContents
     :: Handle s key
     -> Linear s ( 'LinearState next open) ( 'LinearState next open) String
-getContents h = coerce $ SIOS.hGetContents (coerce h)
+getContents = coerce SIOS.hGetContents
 
 putStr
     :: String -> Linear s ( 'LinearState next open) ( 'LinearState next open) ()
