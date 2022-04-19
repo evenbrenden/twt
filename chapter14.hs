@@ -20,13 +20,13 @@ import qualified GHC.TypeLits                  as TL
 import           Language.Haskell.DoNotation   as LHDN
 import           Prelude                 hiding ( Monad(..)
                                                 , getContents
-                                                , putStrLn
+                                                , putStr
                                                 )
 import qualified System.IO                     as SIO
 import           System.IO               hiding ( Handle
                                                 , getContents
                                                 , openFile
-                                                , putStrLn
+                                                , putStr
                                                 )
 import qualified System.IO.Strict              as SIOS
 
@@ -128,15 +128,15 @@ getContents
     -> Linear s ( 'LinearState next open) ( 'LinearState next open) String
 getContents h = coerce $ SIOS.hGetContents (coerce h)
 
-putStrLn
+putStr
     :: String -> Linear s ( 'LinearState next open) ( 'LinearState next open) ()
-putStrLn = coerce SIO.putStrLn
+putStr = coerce SIO.putStr
 
 printReadme :: IO ()
 printReadme = runLinear $ do
     f <- readme
     g <- getContents f
-    putStrLn g
+    putStr g
     closeFile f
 
 getReadme :: IO String
