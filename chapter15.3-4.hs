@@ -15,6 +15,9 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
+import           Data.Void
+import           Unsafe.Coerce                  ( unsafeCoerce )
+
 data family Sing (a :: k)
 
 data SomeSing k where
@@ -110,3 +113,33 @@ instance (SingI h, SingI t) => SingI (h ': t) where
 --     • In the type ‘'[ 'True, 'False]’
 --       In the expression: sing @'[ 'True, 'False]
 --       In an equation for ‘it’: it = sing @'[ 'True, 'False]
+
+-- Decisions, Decisions
+class SDecide k where
+    (%~) :: Sing (a ::k ) -> Sing (b :: k) -> Decision (a :~: b)
+
+data a :~: b where
+    Refl ::a :~: a
+
+data Decision a
+    = Proved a
+    | Disproved (a -> Void)
+
+instance (Eq (Demote k), SingKind k) => SDecide k where
+    a %~ b = if fromSing a == fromSing b
+        then Proved $ unsafeCoerce Refl
+        else Disproved $ const undefined
+
+instance SDecide Bool where
+    STrue  %~ STrue  = Proved Refl
+    SFalse %~ SFalse = Proved Refl
+    _      %~ _      = Disproved $ const undefined
+
+-- Exercise 15.4-i
+-- Give instances of SDecide for Maybe.
+
+instance SDecide a => SDecide (Maybe a) where
+    (SJust a) %~ (SJust b) = case a %~ b of
+        Proved    Refl -> Proved Refl
+        Disproved _    -> Disproved $ const undefined
+    _ %~ _ = Disproved $ const undefined
