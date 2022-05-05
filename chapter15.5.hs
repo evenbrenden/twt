@@ -7,17 +7,22 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeInType #-}
 {-# LANGUAGE UndecidableInstances #-}
 
+import           Data.Aeson
 import           Data.Constraint
+import           Data.Foldable
 import           Data.Kind                      ( Type )
+import           Data.Maybe                     ( mapMaybe )
 import           Data.Singletons.Prelude
 import           Data.Singletons.TH
 
@@ -47,7 +52,7 @@ instance ( Dict1 Eq (f :: k -> Type)
          ) => Eq (Sigma f) where
     Sigma sa fa == Sigma sb fb = case sa %~ sb of
         -- IDK how calling dict1 without any instances can work
-        -- The @_ is needed for some GHC > 8.6.5 (not sure why)
+        -- The @_ is needed for some GHC > 8.6.5 (and IDK why)
         Proved Refl -> case dict1 @_ @Eq @f sa of
             Dict -> fa == fb
         Disproved _ -> False
@@ -74,3 +79,57 @@ instance ( Dict1 Eq (f :: k -> Type)
         Proved Refl -> case dict1 @_ @Ord @f sa of
             Dict -> compare fa fb
         Disproved _ -> compare (fromSing sa) (fromSing sb)
+
+-- Structured Logging
+singletons [d|
+    data LogType
+        = JsonMsg
+        | TextMsg
+        deriving (Eq, Ord, Show)
+    |]
+
+data family LogMsg (msg :: LogType)
+
+newtype instance LogMsg 'JsonMsg = Json Value
+    deriving (Eq, Show)
+
+newtype instance LogMsg 'TextMsg = Text String
+    deriving (Eq, Show)
+
+instance ( c (LogMsg 'JsonMsg)
+         , c (LogMsg 'TextMsg)
+         ) => Dict1 c LogMsg where
+    dict1 SJsonMsg = Dict
+    dict1 STextMsg = Dict
+
+logs :: [Sigma LogMsg]
+logs =
+    [ toSigma $ Text "hello"
+    , toSigma $ Json $ object ["world" .= (5 :: Int)]
+    , toSigma $ Text "structured logging is cool"
+    ]
+
+showLogs :: [Sigma LogMsg] -> [String]
+showLogs logMsgs = fmap
+    (withSigma $ \sa fa -> case dict1 @_ @Show @LogMsg sa of
+        Dict -> show fa
+    )
+    logMsgs
+
+allOut :: IO ()
+allOut = traverse_ putStrLn (showLogs logs)
+
+catSigmas :: forall k (a :: k) f . (SingI a, SDecide k) => [Sigma f] -> [f a]
+catSigmas = mapMaybe fromSigma
+
+jsonLogs :: [LogMsg 'JsonMsg]
+jsonLogs = catSigmas logs
+
+jsonOnly :: String
+jsonOnly = show jsonLogs
+
+textLogs :: [LogMsg 'TextMsg]
+textLogs = catSigmas logs
+
+textOnly :: String
+textOnly = show textLogs
