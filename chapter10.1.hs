@@ -9,7 +9,7 @@
 class Eval l t | l -> t where
     eval :: l -> t
 
-data ListToMaybe a = ListToMaybe [a]
+newtype ListToMaybe a = ListToMaybe [a]
 
 instance Eval (ListToMaybe a) (Maybe a) where
     eval (ListToMaybe []     ) = Nothing
