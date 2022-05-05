@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell chapter15.nix -i "ghcid -c 'ghci -Wall -Wno-unused-imports'"
+#! nix-shell chapter15.nix -i "ghcid -c 'ghci -Wall'"
 
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE EmptyCase #-}
@@ -16,10 +16,8 @@
 {-# LANGUAGE TypeInType #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-import           Data.Aeson
 import           Data.Constraint
 import           Data.Kind                      ( Type )
-import           Data.Maybe                     ( mapMaybe )
 import           Data.Singletons.Prelude
 import           Data.Singletons.TH
 
