@@ -122,14 +122,8 @@ allOut = traverse_ putStrLn (showLogs logs)
 catSigmas :: forall k (a :: k) f . (SingI a, SDecide k) => [Sigma f] -> [f a]
 catSigmas = mapMaybe fromSigma
 
-jsonLogs :: [LogMsg 'JsonMsg]
-jsonLogs = catSigmas logs
-
 jsonOnly :: String
-jsonOnly = show jsonLogs
-
-textLogs :: [LogMsg 'TextMsg]
-textLogs = catSigmas logs
+jsonOnly = show $ catSigmas @_ @ 'JsonMsg @LogMsg logs
 
 textOnly :: String
-textOnly = show textLogs
+textOnly = show $ catSigmas @_ @ 'TextMsg @LogMsg logs
