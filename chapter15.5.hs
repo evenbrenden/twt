@@ -46,6 +46,7 @@ instance ( Dict1 Eq (f :: k -> Type)
          , SDecide k
          ) => Eq (Sigma f) where
     Sigma sa fa == Sigma sb fb = case sa %~ sb of
+        -- The @_ is needed for some GHC > 8.6.5
         Proved Refl -> case dict1 @_ @Eq @f sa of
             Dict -> fa == fb
         Disproved _ -> False
