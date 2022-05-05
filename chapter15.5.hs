@@ -63,4 +63,13 @@ instance ( Dict1 Show (f :: k -> Type)
 -- the fs if the singletons are equal, comparing the
 -- singletons at the term-level otherwise.
 
--- PASS
+instance ( Dict1 Eq (f :: k -> Type)
+         , Dict1 Ord (f :: k -> Type)
+         , Ord (Demote k)
+         , SDecide k
+         , SingKind k
+         ) => Ord (Sigma f) where
+    compare (Sigma sa fa) (Sigma sb fb) = case sa %~ sb of
+        Proved Refl -> case dict1 @_ @Ord @f sa of
+            Dict -> compare fa fb
+        Disproved _ -> compare (fromSing sa) (fromSing sb)
