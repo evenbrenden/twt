@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell chapter15.4-singletons.nix -i "ghcid -c 'ghci -Wall'"
+#! nix-shell chapter15.nix -i "ghcid -c 'ghci -Wall'"
 
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE EmptyCase #-}
