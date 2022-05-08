@@ -49,7 +49,7 @@ prj (UnsafeOpenSum i f) =
     if i == findElem @t @ts then Just $ unsafeCoerce f else Nothing
 
 prjExample :: Maybe Int
-prjExample = fmap runIdentity $ prj @Identity @Int @'[Bool , Int] injExample
+prjExample = runIdentity <$> prj @Identity @Int @'[Bool , Int] injExample
 -- > prjExample
 -- Just 99
 
@@ -59,7 +59,7 @@ decompose (UnsafeOpenSum n t) = Right $ UnsafeOpenSum (n - 1) t
 
 decomposeExample
     :: Either (Identity Bool) (Either (Identity Int) (OpenSum Identity '[]))
-decomposeExample = fmap decompose $ decompose injExample
+decomposeExample = decompose <$> decompose injExample
 
 match :: forall f ts b . (forall t . f t -> b) -> OpenSum f ts -> b
 match fn (UnsafeOpenSum _ t) = fn t

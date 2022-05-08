@@ -27,7 +27,7 @@ class HasPrintf a where
 
 instance KnownSymbol text => HasPrintf (text :: Symbol) where
     type Printf text = String
-    format s = s <> (symbolVal (Proxy @text))
+    format s = s <> symbolVal (Proxy @text)
 
 instance (HasPrintf a, KnownSymbol text) => HasPrintf ((text :: Symbol) :<< a) where
     type Printf (text :<< a) = Printf a
