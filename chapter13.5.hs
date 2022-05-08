@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell chapter13.5.nix -i "ghcid -c 'ghci -Wall -Wno-unused-imports'"
+#! nix-shell -i "ghcid -c 'ghci -Wall -Wno-unused-imports'"
 
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE TypeApplications #-}

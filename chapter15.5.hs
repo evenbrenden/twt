@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell chapter15.nix -i "ghcid -c 'ghci -Wall'"
+#! nix-shell -i "ghcid -c 'ghci -Wall'"
 
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE EmptyCase #-}

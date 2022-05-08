@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell chapter14.nix -i "ghcid -c 'ghci -Wall'"
+#! nix-shell -i "ghcid -c 'ghci -Wall'"
 
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
