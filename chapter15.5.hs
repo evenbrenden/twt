@@ -51,10 +51,9 @@ instance ( Dict1 Eq (f :: k -> Type)
          , SDecide k
          ) => Eq (Sigma f) where
     Sigma sa fa == Sigma sb fb = case sa %~ sb of
-        -- IDK how calling dict1 without any instances can work
-        -- Maybe we are actually not calling dict1 at runtime?
-        -- But rather resolving an Eq instance at compile time?
-        -- The @_ is needed for some GHC > 8.6.5 (and IDK why)
+        -- The Dict1 constraint provides a dict1 function
+        -- Matching on Dict proves that we have an Eq (f a)
+        -- Looks like the @_ is needed for some GHC > 8.6.5
         Proved Refl -> case dict1 @_ @Eq @f sa of
             Dict -> fa == fb
         Disproved _ -> False
