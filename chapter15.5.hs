@@ -51,10 +51,9 @@ instance ( Dict1 Eq (f :: k -> Type)
          , SDecide k
          ) => Eq (Sigma f) where
     Sigma sa fa == Sigma sb fb = case sa %~ sb of
-        -- The Dict1 constraint provides a dict1 function
-        -- Matching on Dict proves that there is an Eq (f a)
         -- The @_ is needed for some GHC > 8.6.5
         Proved Refl -> case dict1 @_ @Eq @f sa of
+            -- The Dict1 constraint offers an Eq (f a)
             Dict -> fa == fb
         Disproved _ -> False
 
