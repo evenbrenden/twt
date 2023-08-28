@@ -2,8 +2,7 @@
 
 > **Exercise 1.2-i**
 >
-> Determine the cardinality of Either Bool (Bool,
-Maybe Bool) -> Bool.
+> Determine the cardinality of Either Bool (Bool, Maybe Bool) -> Bool.
 
 ```
 |Bool| ^ (|Bool|*|(Bool, |Maybe Bool|)|) =
