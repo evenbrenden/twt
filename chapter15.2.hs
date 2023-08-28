@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell -i "ghcid -c 'ghci -Wall -Wno-unused-top-binds'"
+#! nix-shell --pure -i "ghcid -c 'ghci -Wall -Wno-unused-top-binds'"
 
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE DataKinds #-}

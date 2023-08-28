@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell -i "ghcid -c 'ghci -Wall -Wno-orphan -Wno-orphans'"
+#! nix-shell --pure -i "ghcid -c 'ghci -Wall -Wno-orphan -Wno-orphans'"
 
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE DeriveAnyClass #-}

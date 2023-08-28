@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell -i "ghcid -c 'ghci -Wall'"
+#! nix-shell --pure -i "ghcid -c 'ghci -Wall'"
 
 {-# LANGUAGE RoleAnnotations #-}
 {-# LANGUAGE ScopedTypeVariables #-}
